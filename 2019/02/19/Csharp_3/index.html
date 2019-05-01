@@ -183,9 +183,12 @@
   
 
         
-        <a href="/2019/02/19/Csharp_3/" class="archive-article-date">
+        
+<!--
+<a href="/2019/02/19/Csharp_3/" class="archive-article-date">
   	<time datetime="2019-02-19T02:19:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-19</time>
 </a>
+-->
         
       </header>
     
@@ -196,7 +199,8 @@
 <pre><code>1.如果创建Vb.net类型的项目，实现一样的功能，那么编译后生成的文件有什么区别？
 2·Console类型从何而来？
 3.是怎么运行的？
-</code></pre><h1 id="CLR—公共中间语言"><a href="#CLR—公共中间语言" class="headerlink" title="CLR—公共中间语言"></a>CLR—公共中间语言</h1><p>首先要了解C#源码在编译之后会的到什么文件？ 在Vc++生成的可执行文件，经过预编译，编译，汇编，链接几个步骤后最终生成的可执行文件中就已经包含了处理器的本地代码，支持它运行的只是操作系统和本地的机器指令集，那么C#呢，那需要引入程序集这个概念：在.NET框架下，类似C#这样的高级语言经过编译后生成的结果文件被称做程序集，其后缀名是.dll（类库）或.exe（可执行程序）。</p>
+</code></pre> <a id="more"></a>
+<h1 id="CLR—公共中间语言"><a href="#CLR—公共中间语言" class="headerlink" title="CLR—公共中间语言"></a>CLR—公共中间语言</h1><p>首先要了解C#源码在编译之后会的到什么文件？ 在Vc++生成的可执行文件，经过预编译，编译，汇编，链接几个步骤后最终生成的可执行文件中就已经包含了处理器的本地代码，支持它运行的只是操作系统和本地的机器指令集，那么C#呢，那需要引入程序集这个概念：在.NET框架下，类似C#这样的高级语言经过编译后生成的结果文件被称做程序集，其后缀名是.dll（类库）或.exe（可执行程序）。</p>
 <p>程序集的定义只是给编译后生成的文件一个稍微正式一点的名称，对于解释“它是由什么构成的”这个问题并没有太大的帮助。为了进一步了解程序集，我们再来做一个试验，使用VB.NET创建一个控制台应用程序项目（ConsoleAppVB），并生成一个程序集，代码功能和上面用C#创建的项目是一样的的。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Module Program</span><br><span class="line">Sub Main()</span><br><span class="line">Dim text AsString = &quot;hello, world !&quot;</span><br><span class="line">        Console.WriteLine(text)</span><br><span class="line">EndSub</span><br><span class="line">EndModule</span><br></pre></td></tr></table></figure>
 <p>利用反汇编查看代码会发现它们的项目基本一模一样，至此，可以得到一个初步的推断：不管是VB.NET还是是C#，编译之后的程序集都能够用IL DASM打开，因此它们生成的程序集的格式都是相同的；当程序所实现的功能相同时，程序集所包含的CIL代码也是类似的。</p>
@@ -268,7 +272,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">C# .net</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">C#</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">.net</a>
         		</li>
       		
 		</ul>
@@ -286,6 +294,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2019/04/26/protocol/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          互联网协议
+        
+      </div>
+    </a>
   
   
     <a href="/2019/02/18/Csharp_2/" id="article-nav-older" class="article-nav-link-wrap">
@@ -428,7 +445,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">C# .net</a>
+                <a href="javascript:void(0)" class="js-tag color3">协议</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">.net</a>
               </li>
             
             <div class="clearfix"></div>

@@ -6,7 +6,7 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>关于 | ArtisanQ</title>
+  <title>C#基础知识——委托 | ArtisanQ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
     <link rel="icon" href="/assets/img/dog.png">
@@ -171,22 +171,22 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll" style="width: 80%;margin: 0 auto;">
-            <article id="page-" class="article article-type-page " itemscope itemprop="blogPost">
+            <article id="post-Csharp_4" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      关于
+      C#基础知识——委托
     </h1>
   
 
         
         
 <!--
-<a href="/resume/index.html" class="archive-article-date">
-  	<time datetime="2019-04-20T05:07:47.991Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-20</time>
+<a href="/2019/04/28/Csharp_4/" class="archive-article-date">
+  	<time datetime="2019-04-28T13:45:31.011Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
 </a>
 -->
         
@@ -194,7 +194,46 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>  暂未开发</p>
+        <h1 id="委托是什么？"><a href="#委托是什么？" class="headerlink" title="委托是什么？"></a>委托是什么？</h1><p>委托是一种引用类型，表示对具有特定参数列表和返回类型的<strong>方法</strong>的<strong>引用</strong>。<br> <a id="more"></a><br>使委托有五个步骤：</p>
+<p>定义——&gt;声明——&gt;实例化——&gt;作为参数传递给方法——&gt;在方法中使用委托</p>
+<p>一、定义：delegate void Mydelegate(type1 para1,type2 para2);</p>
+<p>二、声明： Mydelegate d;</p>
+<p>三、实例化：d =new Mydelegate(obj.InstanceMethod);(把一个方法传递给委托的构造器)，前面三步就好比构造一个律师对象，方法InstanceMethod好比是当事人</p>
+<p>四、作为参数传递给方法：MyMethod（d）;（委托实现把方法作为参数传入到另一个方法，委托就是一个包装方法的对象）</p>
+<p>五、在方法中使用委托。MyMethod方法好比是法官，MyMethod方法先调用委托，委托在调用方法InstanceMethod,这个过程就如法官向律师问话，然后律师之前肯定向当事人了解了案件的情况。C#委托中好比是律师，真真诉说案情的是当事人（真真被调用的是实例方法InstanceMethod）</p>
+<hr>
+<p>打个比方，两个数据库之间的多个表同步，同步的方法一样，但是同步的每张表有新增表，删除表的两种方式或其它方式，此时我们就可以先将新增，删除剥离出来，将它们的实现方法作为参数代入同步方法。</p>
+<p><strong>委托的存在就是把变化的部分封装起来，然后再把封装的对象作为一个对象传递给方法的参数.</strong></p>
+<hr>
+<h2 id="以上部分介绍了委托的一些使用和理解，那么编译器和CLR在背后对我们用delegate-关键字定义的委托类型做了些什么事情？"><a href="#以上部分介绍了委托的一些使用和理解，那么编译器和CLR在背后对我们用delegate-关键字定义的委托类型做了些什么事情？" class="headerlink" title="以上部分介绍了委托的一些使用和理解，那么编译器和CLR在背后对我们用delegate 关键字定义的委托类型做了些什么事情？"></a>以上部分介绍了委托的一些使用和理解，那么编译器和CLR在背后对我们用delegate 关键字定义的委托类型做了些什么事情？</h2><p>当我们定义一个委托时</p>
+<p>编译器把我们定义的委托类型编译成一个下面这样的类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Public class DelegateTest: System.MulticastDelegate</span><br><span class="line"> &#123;</span><br><span class="line">         public DelegateTest(Object object, IntPtr method);</span><br><span class="line"></span><br><span class="line">         public virtual Void Invoke(int32 parm);</span><br><span class="line"></span><br><span class="line">         public virtual IAsyncResult BeginInvoke(Int32 parm, AsyncCallback callback, Object object );</span><br><span class="line"></span><br><span class="line">          public virtual void EndInvoke(IAsyncResult result);</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p> 从中间语言的代码就可以很明显的看出我们在代码中写的委托，对于中间语言来说就是一个类，该类继承于FCL中定义的Systme.MulticastDelegate类型，所有委托类型都派生于MulticastDelegate，所以委托继承MulticastDelegate的字段、属性和方法。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段</th>
+<th style="text-align:right">类型</th>
+<th style="text-align:center">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">_target</td>
+<td style="text-align:right">System.Object</td>
+<td style="text-align:center">当委托对象包装的是一个静态方法时，这个字段为null,当委托对象包装一个实例方法时，这个字段引用的是方法所在的类的对象</td>
+</tr>
+<tr>
+<td style="text-align:left">_methodPtr</td>
+<td style="text-align:right">System.IntPtr</td>
+<td style="text-align:center">一个内部的整数，可以认为是方法句柄，标识着要调用的方法</td>
+</tr>
+<tr>
+<td style="text-align:left">_invocationList</td>
+<td style="text-align:right">System.Object</td>
+<td style="text-align:center">该字段通常为null，当构造一个委托链（多播委托）时，才引用一个委托数组。</td>
+</tr>
+</tbody>
+</table>
 
       
 
@@ -203,6 +242,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">C#</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -214,6 +264,16 @@
 </article>
 
   
+<nav id="article-nav">
+  
+  
+    <a href="/2019/04/26/protocol_2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">http常见问题</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -264,7 +324,7 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

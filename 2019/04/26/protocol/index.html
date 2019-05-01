@@ -6,7 +6,7 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>关于 | ArtisanQ</title>
+  <title>互联网协议 | ArtisanQ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
     <link rel="icon" href="/assets/img/dog.png">
@@ -171,22 +171,22 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll" style="width: 80%;margin: 0 auto;">
-            <article id="page-" class="article article-type-page " itemscope itemprop="blogPost">
+            <article id="post-protocol" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      关于
+      互联网协议
     </h1>
   
 
         
         
 <!--
-<a href="/resume/index.html" class="archive-article-date">
-  	<time datetime="2019-04-20T05:07:47.991Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-20</time>
+<a href="/2019/04/26/protocol/" class="archive-article-date">
+  	<time datetime="2019-04-26T07:21:24.412Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-26</time>
 </a>
 -->
         
@@ -194,7 +194,41 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>  暂未开发</p>
+        <h1 id="互联网的核心是一系列协议，总称为”互联网协议”（Internet-Protocol-Suite）"><a href="#互联网的核心是一系列协议，总称为”互联网协议”（Internet-Protocol-Suite）" class="headerlink" title="互联网的核心是一系列协议，总称为”互联网协议”（Internet Protocol Suite）"></a>互联网的核心是一系列协议，总称为”互联网协议”（Internet Protocol Suite）</h1><a id="more"></a>
+<p>可分为五层：</p>
+<ol>
+<li>应用层 ——用户</li>
+<li>传输层 ——↑</li>
+<li>网络层 ——↑</li>
+<li>链接层 ——↑</li>
+<li>实体层 ——硬件</li>
+</ol>
+<hr>
+<p><strong>实体层</strong>：主要通过光缆、电缆、双绞线、无线电波等等的物理手段使两台机器联网，传送0和1电信号 。<br><br></p>
+<hr>
+<p><strong>链接层</strong>：单纯的0和1没有任何意义，必须规定解读方式：多少个电信号算一组？每个信号位有何意义？</p>
+<p><strong>以太网协议</strong>：主流的协议，规定一组电信号构成一个数据包，叫做“帧”。<br>帧分为标头（固定18字节）和数据（46-1500）两部分，前者包含数据包的一些说明项，比如说明，发送者等等，后者则为具体的数据，如果数据很长（大于1518字节），就必须要分割多个帧进行发送。</p>
+<p><strong>MAC地址</strong>： 发送者和接受者以MAC地址为标识，以太网规定，连入网络的所有设备，都必须具有“网卡“接口。</p>
+<hr>
+<p><strong>网络层</strong>：<br><br> 1.网络层的由来： 以太网采用广播方式发送数据包，所有成员人手一”包”，不仅效率低，而且局限在发送者所在的子网络。这是一个缺陷，解决方法为。如果是同一个子网络，就采用广播方式发送，否则就采用”路由”方式发送。（”路由”的意思，就是指如何向不同的子网络分发数据包）</p>
+<p><b>这就导致了”网络层”的诞生。它的作用是引进一套新的地址，使得我们能够区分不同的计算机是否属于同一个子网络。这套地址就叫做”网络地址”，简称”网址”。</b></p>
+<p>2.规定网络地址的协议叫做IP协议，它所定义的地址被称为IP地址。<br>现在最广泛的是IPV4版本，这个版本规定网络地址由32个二进制组成<br><br>0.0.0.0 ——255.255.255.255。？<br><br>这个地址分为两个部分，前一部分代表网络，后一部分位代表主机。<br>但是问题是，我们不知道那些部分代表的是在同一网络？<br><br><strong>”子网掩码”</strong>：就是表示子网络特征的一个参数。它在形式上等同于IP地址，也是一个32位二进制数字，它的网络部分全部为1，主机部分全部为0。<br><br><br>知道”子网掩码”，我们就能判断，任意两个IP地址是否处在同一个子网络。方法是将两个IP地址与子网掩码分别进行AND运算（两个数位都为1，运算结果为1，否则为0），然后比较结果是否相同，如果是的话，就表明它们在同一个子网络中，否则就不是。</p>
+<p>比如，已知IP地址172.16.254.1和172.16.254.233的子网掩码都是255.255.255.0，请问它们是否在同一个子网络？两者与子网掩码分别进行AND运算，结果都是172.16.254.0，因此它们在同一个子网络。</p>
+<h2 id><a href="#" class="headerlink" title></a><br><br></h2><p><strong>传输层</strong>：<br>有了MAC地址和IP地址，我们已经可以在互联网上任意两台主机上建立通信。<br><br></p>
+<p>接下来的问题是，同一台主机上有许多程序都需要用到网络，比如，你一边浏览网页，一边与朋友在线聊天。当一个数据包从互联网上发来的时候，你怎么知道，它是表示网页的内容，还是表示在线聊天的内容？</p>
+<p>也就是说，我们还需要一个参数，表示这个数据包到底供哪个程序（进程）使用。这个参数就叫做”端口”（port）</p>
+<p>“端口”是0到65535之间的一个整数，正好16个二进制位。0到1023的端口被系统占用，用户只能选用大于1023的端口。不管是浏览网页还是在线聊天，应用程序会随机选用一个端口，然后与服务器的相应端口联系。</p>
+<p>“传输层”的功能，就是建立”端口到端口”的通信。相比之下，”网络层”的功能是建立”主机到主机”的通信。只要确定主机和端口，我们就能实现程序之间的交流。因此，Unix系统就把主机+端口，叫做”套接字”（socket）。有了它，就可以进行网络应用程序开发了。</p>
+<p><strong>1.UDP协议</strong></p>
+<p>我们必须在数据包中加入端口信息，这就需要新的协议。最简单的实现叫做UDP协议，它的格式几乎就是在数据前面，加上端口号。</p>
+<p><strong>2.TCP协议</strong></p>
+<p>UDP协议的优点是比较简单，容易实现，但是缺点是可靠性较差，一旦数据包发出，无法知道对方是否收到。</p>
+<p>为了解决这个问题，提高网络可靠性，TCP协议就诞生了。这个协议非常复杂，但可以近似认为，它就是有确认机制的UDP协议，每发出一个数据包都要求确认。如果有一个数据包遗失，就收不到确认，发出方就知道有必要重发这个数据包了。</p>
+<p>因此，TCP协议能够确保数据不会遗失。它的缺点是过程复杂、实现困难、消耗较多的资源。</p>
+<p>TCP数据包和UDP数据包一样，都是内嵌在IP数据包的”数据”部分。TCP数据包没有长度限制，理论上可以无限长，但是为了保证网络的效率，通常TCP数据包的长度不会超过IP数据包的长度，以确保单个TCP数据包不必再分割。</p>
+<hr>
+<p><strong>应用层</strong>:规定应用程序的数据格式。</p>
+<p>举例来说，TCP协议可以为各种各样的程序传递数据，比如Email、WWW、FTP等等。那么，必须有不同协议规定电子邮件、网页、FTP数据的格式，这些应用程序协议就构成了”应用层”。</p>
 
       
 
@@ -203,6 +237,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -214,6 +259,25 @@
 </article>
 
   
+<nav id="article-nav">
+  
+    <a href="/2019/04/26/protocol_2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          http常见问题
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/02/19/Csharp_3/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">.net所思所想</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -264,7 +328,7 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

@@ -173,91 +173,108 @@
           <div id="js-content" class="content-ll" style="width: 80%;margin: 0 auto;">
             
   
-    <article id="post-Csharp_3" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Csharp_4" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/19/Csharp_3/">.net所思所想</a>
+      <a class="article-title" href="/2019/04/28/Csharp_4/">C#基础知识——委托</a>
     </h1>
   
 
         
-        <a href="/2019/02/19/Csharp_3/" class="archive-article-date">
-  	<time datetime="2019-02-19T02:19:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-19</time>
+        
+<!--
+<a href="/2019/04/28/Csharp_4/" class="archive-article-date">
+  	<time datetime="2019-04-28T13:45:31.011Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
 </a>
+-->
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line"> </span><br><span class="line">class Program &#123;</span><br><span class="line">    static void Main(string[] args) &#123;</span><br><span class="line">        string text = &quot;hello, world!&quot;;</span><br><span class="line">        Console.WriteLine(text);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>以下问题：</p>
-<pre><code>1.如果创建Vb.net类型的项目，实现一样的功能，那么编译后生成的文件有什么区别？
-2·Console类型从何而来？
-3.是怎么运行的？
-</code></pre><h1 id="CLR—公共中间语言"><a href="#CLR—公共中间语言" class="headerlink" title="CLR—公共中间语言"></a>CLR—公共中间语言</h1><p>首先要了解C#源码在编译之后会的到什么文件？ 在Vc++生成的可执行文件，经过预编译，编译，汇编，链接几个步骤后最终生成的可执行文件中就已经包含了处理器的本地代码，支持它运行的只是操作系统和本地的机器指令集，那么C#呢，那需要引入程序集这个概念：在.NET框架下，类似C#这样的高级语言经过编译后生成的结果文件被称做程序集，其后缀名是.dll（类库）或.exe（可执行程序）。</p>
-<p>程序集的定义只是给编译后生成的文件一个稍微正式一点的名称，对于解释“它是由什么构成的”这个问题并没有太大的帮助。为了进一步了解程序集，我们再来做一个试验，使用VB.NET创建一个控制台应用程序项目（ConsoleAppVB），并生成一个程序集，代码功能和上面用C#创建的项目是一样的的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Module Program</span><br><span class="line">Sub Main()</span><br><span class="line">Dim text AsString = &quot;hello, world !&quot;</span><br><span class="line">        Console.WriteLine(text)</span><br><span class="line">EndSub</span><br><span class="line">EndModule</span><br></pre></td></tr></table></figure>
-<p>利用反汇编查看代码会发现它们的项目基本一模一样，至此，可以得到一个初步的推断：不管是VB.NET还是是C#，编译之后的程序集都能够用IL DASM打开，因此它们生成的程序集的格式都是相同的；当程序所实现的功能相同时，程序集所包含的CIL代码也是类似的。</p>
-<p><img src="http://ww1.sinaimg.cn/large/0071kAesgy1g0bjqk2dapj30dg04aq30.jpg" alt></p>
-<p>接下来再深入地分析一下，公共中间语言这个术语到底包含了哪几层含义。</p>
-<p>公共：因为不论是C#语言也好，VB.NET语言也好，C++/CLI语言也好，甚至是重新开发的一套以自己的名字缩写命名的语言，只要它期望运行的目标平台是.NET，在经过相应的编译器编译之后，所生成的程序集就是由CIL语言代码描述的。</p>
-<p>中间。这个词也是大有深意，为什么不叫公共机器语言（Common Machine Language），或者公共本地语言（Common Native Language）？因为这种语言只是比我们使用的高级语言，比如C#低级一点，并不是CPU可以直接执行的本地机器语言。这种语言还需要.NET运行时（.Net runtime）环境的支持，在执行之前，进行一个被称为Just-in-time（即时）的二次编译过程，才能转变成计算机可以识别的指令。关于.NET运行时，以及详细过程后面再介绍，现在只要知道，这个文件所包含的CIL代码并非机器可以直接执行的指令代码。</p>
-<p>语言。CIL不过是一种程序语言，只不过相对于C#来说，它是一种更低级语言。CIL是一种基于堆栈的语言，同时，它提供了class、interface、继承、多态等诸多面向对象的语言特性，因此它又是完全面向对象的语言。如果愿意，甚至可以直接编写CIL代码，并且使用CIL的编译工具IL ASM（IL Assembler，IL汇编程序）来对它进行编译。只不过，和大多数低级语言一样，这种方式会使开发效率会变得很低。这里注意区别一下IL ASM和IL DASM，它们的拼写是不同的。</p>
-<p>由于程序集是由CIL语言所描述的，因此CIL也叫做程序集语言（Assembly Language）。又因为.NET程序集需要由.NET运行时加载才能运行，可以视其为由.NET运行时进行管理的，所以CIL代码也叫做托管代码（Managed Code）。相对的，不需要.NET运行时就可以执行的代码就叫做非托管代码（Unmanaged Code）。</p>
-<h1 id="BCL和FCL"><a href="#BCL和FCL" class="headerlink" title="BCL和FCL"></a>BCL和FCL</h1><p>基类库（Base Class Library）：这个类库包含的都是些最基本的类型，其本身已经与CIL语言融为一提了，为CIL语言提供基础的编程支持，以至于该类库已经成为了CLI标准的一部分</p>
-<p>基元类型(Primitive Type)：编译器直接支持，将语言本身的关键字类型转换为CIL类型的，就叫做基元类型。byte、int、string都是基元类型。</p>
-<hr>
-<p>框架类库（Framework Class Library）:BCL是FCL的一个子集</p>
-<p>从功能上来看，可以将FCL框架类库划分成以下几层。</p>
-<p>最内一层，由BCL的大部分组成，主要作用是对.NET框架、.NET运行时及CIL语言本身进行支持，例如基元类型、集合类型、线程处理、应用程序域、运行时、安全性、互操作等。</p>
-<p>中间一层，包含了对操作系统功能的封装，例如文件系统、网络连接、图形图像、XML操作等。</p>
-<p>最外一层，包含各种类型的应用程序，例如Windows Forms、Asp.NET、WPF、WCF、WF等。</p>
-<h1 id="什么是JIT？还有什么其他编译方式？何时使用到JIT？"><a href="#什么是JIT？还有什么其他编译方式？何时使用到JIT？" class="headerlink" title="什么是JIT？还有什么其他编译方式？何时使用到JIT？"></a>什么是JIT？还有什么其他编译方式？何时使用到JIT？</h1><p>即时编译（英语：Just-in-time compilation）是动态编译的一种形式，是一种提高程序运行效率的方法。通常，程序有两种运行方式：静态编译与动态编译。静态编译的程序在执行前全部被翻译为机器码，而动态编译执行的则是一句句，边运行边翻译。</p>
-<p>即时编译则混合了这二者，一句句编译源代码，但是会将翻译过的代码缓存起来以降低性能损耗。相对于静态编译代码，即时编译的代码可以处理延迟绑定并增强安全性。</p>
-<p>CLR的JIT负责将IL编译成机器码。 当程序编译成程序集之后，CLR加载任何需要用到的其他程序集，并开始使用JIT将CIL编译为机器码。JIT编译器会在方法的首次调用时，从类型的元数据中查找方法，并进行检查，例如检查类型是否安全。如果出现了问题，则触发运行时错误。以后对方法的所有调用都以本地代码的形式全速运行，无须重新检查。</p>
-<h1 id="程序集的结构"><a href="#程序集的结构" class="headerlink" title="程序集的结构"></a>程序集的结构</h1><p>程序集最重要的两部分是IL和元数据。它们合称托管模块。程序集包括以下部分：</p>
-<p>PE/COFF头：包含了供操作系统查看和利用的信息。Windows操作系统能够加载并运行.dll和.exe是因为它能够理解PE/COFF文件的格式。</p>
-<p>CLR头：告诉操作系统这个PE/COFF文件是一个.NET程序集，区别于其他类型的可执行程序。程序集中包含的IL语言代码并不是计算机可以直接执行的，还需要进行即时编译，那么在对IL语言代码进行编译前，需要先将编译的环境运行起来。</p>
-<p>清单（manifest）：相当于一个目录，描述了程序集本身的信息，例如程序集标识（名称、版本、文化）、程序集包含的资源（Resources）、组成程序集的文件、该程序集需要用到的所有外部程序集名单等。</p>
-<p>元数据：如果说清单描述了程序集自身的信息，那么元数据则描述了程序集所包含的内容。这些内容包括：程序集包含的模块、类型、类型的成员、类型和类型成员的可见性等。注意，元数据并不包含类型的实现，有点类似于C++中的.h头文件。在.NET中，查看元数据的过程叫做反射（Reflection）。</p>
-<p>IL：也就是元数据中类型的实现，包括方法、属性等。</p>
-<p>资源文件： 例如图标文件，文本文件，.resx资源文件等。</p>
-<h1 id="元数据的作用"><a href="#元数据的作用" class="headerlink" title="元数据的作用"></a>元数据的作用</h1><p>部分元数据的作用：</p>
-<ul>
-<li>IDE通过元数据进行智能感知，例如在你打出一个.之后，自动弹出下拉菜单，获得类型的方法和属性等。</li>
-<li>CLR的代码验证过程使用元数据确保代码只执行类型安全的操作。</li>
-<li>序列化和反序列化的基础。</li>
-<li>通过访问元数据来获得类型的成员（即反射）。虽然这会降低性能，但很多时候必须要这么做，例如类型是动态类型，ORM框架即为一个常见的场景。</li>
-<li></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> 1 using System;</span><br><span class="line"> 2  </span><br><span class="line"> 3 class Program</span><br><span class="line"> 4     &#123;</span><br><span class="line"> 5         static void Main(string[] args)</span><br><span class="line"> 6         &#123;</span><br><span class="line"> 7             string text = &quot;hello, world!&quot;;</span><br><span class="line"> 8             Console.WriteLine(text);</span><br><span class="line"> 9         &#125;</span><br><span class="line">10     &#125;</span><br></pre></td></tr></table></figure>
-<p>问：该程序需要引入什么参考？</p>
-<p>答：什么都不需要。</p>
-<p>问：也就是说你可以把VS帮你引用的所有参考都删了？</p>
-<p>答：是。这个程序只需要基础类库。</p>
-<p>问：那你都删了之后，Console类型从哪里来？</p>
-<p>答：从mscorlib.dll里来。另外，string这个类型也从那儿来，因为string是基元类型，所有的基元类型都在mscorlib.dll的System命名空间。所以你不能把第一行那个using拿掉。</p>
-<p>问：为什么我从来没见过mscorlib.dll？</p>
-<p>答：因为它在GAC里，每次自动引用。</p>
-<p>问：如果我用VS编程，运行程序（非调试模式），会发生什么？</p>
-<p>答：VS会先用C#编译器将源代码编译为一个程序集。程序集包括IL代码。因为源代码没问题，所以编译成功，之后，CLR引用程序集中所有需要的其他程序集（这个例子就是没有其他程序集），进行运行时检查，检查也没问题，就开始调用JIT进行即时编译。将IL转换为机器码。机器运行机器码，打印出hello, world!，然后退出程序。</p>
-<p>问：你刚刚提到了程序集，那是作什么用的？</p>
-<p>答：程序集是部署和重用应用程序的最小单元。它是自解释的，主要包括IL和元数据，以及资源文件等。</p>
-<p>问：你接触过或者对程序集进行过访问吗？</p>
-<p>答：在反射时会访问程序集中的元数据。</p>
-<p>问：反射有什么用处？它对性能是否有影响？</p>
-<p>答：且听以后分解。</p>
-<h1 id="提高"><a href="#提高" class="headerlink" title="提高"></a>提高</h1><ul>
-<li>Web服务：RPC以及其他  -&gt; WCF (SOAP) -&gt; Web API (REST) -&gt; Web API 2 (REST)</li>
-<li>Web应用: ASP -&gt; ASP.NET -&gt; ASP.NET MVC -&gt; ASP.NET Core</li>
-<li>数据库：ADO.NET -&gt; ADO.NET Entity Framework (ORM)</li>
-<li>异步编程：委托 -&gt; 事件 -&gt; 任务 -&gt; 任务语法糖</li>
-</ul>
+        <h1 id="委托是什么？"><a href="#委托是什么？" class="headerlink" title="委托是什么？"></a>委托是什么？</h1><p>委托是一种引用类型，表示对具有特定参数列表和返回类型的<strong>方法</strong>的<strong>引用</strong>。<br>
+        
+      
 
+      
+    </p></div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">C#</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/28/Csharp_4/">展开全文 </a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-protocol_2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/26/protocol_2/">http常见问题</a>
+    </h1>
+  
+
+        
+        
+<!--
+<a href="/2019/04/26/protocol_2/" class="archive-article-date">
+  	<time datetime="2019-04-26T10:20:05.796Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-26</time>
+</a>
+-->
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="HTTP是一个客户端（用户）和服务端（网站）之间请求和应答的标准，通常使用TCP协议。"><a href="#HTTP是一个客户端（用户）和服务端（网站）之间请求和应答的标准，通常使用TCP协议。" class="headerlink" title="HTTP是一个客户端（用户）和服务端（网站）之间请求和应答的标准，通常使用TCP协议。"></a>HTTP是一个客户端（用户）和服务端（网站）之间请求和应答的标准，通常使用TCP协议。</h1>
+        
       
 
       
@@ -270,7 +287,174 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">C# .net</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">协议</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">http</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/26/protocol_2/">展开全文 </a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-protocol" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/26/protocol/">互联网协议</a>
+    </h1>
+  
+
+        
+        
+<!--
+<a href="/2019/04/26/protocol/" class="archive-article-date">
+  	<time datetime="2019-04-26T07:21:24.412Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-26</time>
+</a>
+-->
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="互联网的核心是一系列协议，总称为”互联网协议”（Internet-Protocol-Suite）"><a href="#互联网的核心是一系列协议，总称为”互联网协议”（Internet-Protocol-Suite）" class="headerlink" title="互联网的核心是一系列协议，总称为”互联网协议”（Internet Protocol Suite）"></a>互联网的核心是一系列协议，总称为”互联网协议”（Internet Protocol Suite）</h1>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/26/protocol/">展开全文 </a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Csharp_3" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/02/19/Csharp_3/">.net所思所想</a>
+    </h1>
+  
+
+        
+        
+<!--
+<a href="/2019/02/19/Csharp_3/" class="archive-article-date">
+  	<time datetime="2019-02-19T02:19:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-19</time>
+</a>
+-->
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line"> </span><br><span class="line">class Program &#123;</span><br><span class="line">    static void Main(string[] args) &#123;</span><br><span class="line">        string text = &quot;hello, world!&quot;;</span><br><span class="line">        Console.WriteLine(text);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以下问题：</p>
+<pre><code>1.如果创建Vb.net类型的项目，实现一样的功能，那么编译后生成的文件有什么区别？
+2·Console类型从何而来？
+3.是怎么运行的？
+</code></pre>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">C#</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">.net</a>
         		</li>
       		
 		</ul>
@@ -322,9 +506,12 @@
   
 
         
-        <a href="/2019/02/18/Csharp_2/" class="archive-article-date">
+        
+<!--
+<a href="/2019/02/18/Csharp_2/" class="archive-article-date">
   	<time datetime="2019-02-18T14:39:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-18</time>
 </a>
+-->
         
       </header>
     
@@ -406,9 +593,12 @@
   
 
         
-        <a href="/2019/02/15/Csharp_1/" class="archive-article-date">
+        
+<!--
+<a href="/2019/02/15/Csharp_1/" class="archive-article-date">
   	<time datetime="2019-02-15T08:39:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-15</time>
 </a>
+-->
         
       </header>
     
@@ -578,7 +768,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">C# .net</a>
+                <a href="javascript:void(0)" class="js-tag color3">协议</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">.net</a>
               </li>
             
             <div class="clearfix"></div>
